@@ -15,9 +15,17 @@ def step_room(T: float, heater_on: int, T_out: float, R: float, C: float, P: flo
         rng: Optional random number generator for noise.
         Returns the updated room temperature after time step dt.
     '''
-    # --- Student code starts here ---
-    # Hint: Use the Euler method to integrate the differential equation.
-    # RC model: dT/dt = (T_out - T)/(R*C) + heater_on * P/C + noise
-    
-    # --- Student code ends here ---
-    return 0.0 # remove when code is added
+    if R <= 0 or C <= 0:
+        raise ValueError("R and C must be positive")
+    if dt <= 0:
+        raise ValueError("dt must be positive")
+    if process_sigma < 0:
+        raise ValueError("process_sigma cannot be negative")
+    if process_sigma > 0 and rng is None:
+        raise ValueError("rng is required when process noise is enabled")
+
+    temperature_rate = (T_out - T) / (R * C) + heater_on * P / C
+    next_temperature = T + temperature_rate * dt
+    if process_sigma > 0:
+        next_temperature += rng.gauss(0.0, process_sigma)
+    return next_temperature

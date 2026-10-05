@@ -17,10 +17,11 @@ class Environment:
             t: Time in seconds.
             Returns the outside temperature in degrees Celsius.
         '''
-        # --- Student code starts here ---
-        # Hint: Make sure you make the temperature sinusoidal and take into account the door event!
-        # Hint, use self.amplitude, self.period_s, self.door_start_s, self.door_duration_s, self.door_drop_C, self.base to make use of the values defined in the dataclass
-        
-        # --- Student code ends here ---
-        
-        return 0.0 # remove when code is added
+        if self.period_s <= 0:
+            raise ValueError("period_s must be positive")
+
+        temperature = self.base + self.amplitude * math.sin(2.0 * math.pi * t / self.period_s)
+        door_is_open = self.door_start_s <= t < self.door_start_s + self.door_duration_s
+        if door_is_open:
+            temperature -= self.door_drop_C
+        return temperature

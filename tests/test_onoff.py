@@ -18,6 +18,7 @@ def test_hold_inside_band():
     assert t.update(21.0) == 0, "Thermostat should remain off when temperature is inside the deadband"
 
 def test_safety_cutoff():
-    t = OnOffThermostat(setpoint=21.0, deadband=1.0, safety_high=25.0)
+    t = OnOffThermostat(setpoint=30.0, deadband=1.0, safety_high=25.0)
     t.state = 1
-    assert t.update(25.0) == 0, "Thermostat should shut off at the safety high cutoff"
+    assert t.update(25.0) == 1, "Thermostat should remain on at the safety high cutoff"
+    assert t.update(25.1) == 0, "Thermostat should shut off above the safety high cutoff"
